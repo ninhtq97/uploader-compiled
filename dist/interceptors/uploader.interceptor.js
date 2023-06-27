@@ -32,12 +32,15 @@ function UploaderInterceptor({ fieldName, uploadFields, maxCount, path, limits, 
                 limits: limits,
             };
             if (uploadFields) {
+                console.log('FileFieldsInterceptor');
                 this.fileInterceptor = new ((0, platform_express_1.FileFieldsInterceptor)(uploadFields, multerOptions))();
             }
             else if (maxCount) {
+                console.log('FilesInterceptor');
                 this.fileInterceptor = new ((0, platform_express_1.FilesInterceptor)(fieldName, maxCount, multerOptions))();
             }
             else {
+                console.log('FileInterceptor');
                 this.fileInterceptor = new ((0, platform_express_1.FileInterceptor)(fieldName, multerOptions))();
             }
         }
