@@ -18,15 +18,31 @@ function UploaderValidatorInterceptor() {
             const ctx = context.switchToHttp();
             const req = ctx.getRequest();
             const acceptMimetype = req.headers[uploader_constant_1.UPLOADER_HEADERS.ACCEPT_MIME];
-            const { file } = req;
-            console.log('Uploader Validator Req:', req);
-            const buffer = await (0, uploader_util_1.readChunk)(file.path, { length: 4100 });
-            const { mime } = await (0, file_type_1.fromBuffer)(buffer);
-            if (!acceptMimetype.includes(mime)) {
-                await (0, promises_1.unlink)(file.path);
-                throw new common_1.BadRequestException('Invalid original mime type');
+            const { file, files } = req;
+            if (file) {
+                await this.validateMime([file], [acceptMimetype].flat());
+            }
+            if (files) {
+                if (Array.isArray(files)) {
+                    await this.validateMime(files, [acceptMimetype].flat());
+                }
+                else {
+                    for (const fileField of Object.values(files)) {
+                        await this.validateMime(fileField, [acceptMimetype].flat());
+                    }
+                }
             }
             return next.handle();
+        }
+        async validateMime(files, acceptMimetype) {
+            for (const file of files) {
+                const buffer = await (0, uploader_util_1.readChunk)(file.path, { length: 4100 });
+                const { mime } = await (0, file_type_1.fromBuffer)(buffer);
+                if (!acceptMimetype.includes(mime)) {
+                    await (0, promises_1.unlink)(file.path);
+                    throw new common_1.BadRequestException('Invalid original mime type');
+                }
+            }
         }
     };
     Interceptor = __decorate([
