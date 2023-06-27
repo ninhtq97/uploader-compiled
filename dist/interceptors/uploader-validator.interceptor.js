@@ -18,7 +18,9 @@ function UploaderValidatorInterceptor() {
             const ctx = context.switchToHttp();
             const req = ctx.getRequest();
             const acceptMimetype = req.headers[uploader_constant_1.UPLOADER_HEADERS.ACCEPT_MIME];
-            const { file } = req;
+            const { file, files } = req;
+            console.log('Uploader Validator File:', file);
+            console.log('Uploader Validator Files:', files);
             const buffer = await (0, uploader_util_1.readChunk)(file.path, { length: 4100 });
             const { mime } = await (0, file_type_1.fromBuffer)(buffer);
             if (!acceptMimetype.includes(mime)) {
