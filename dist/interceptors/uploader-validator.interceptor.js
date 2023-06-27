@@ -10,6 +10,7 @@ exports.UploaderValidatorInterceptor = void 0;
 const common_1 = require("@nestjs/common");
 const file_type_1 = require("file-type");
 const promises_1 = require("fs/promises");
+const path_1 = require("path");
 const uploader_constant_1 = require("../constants/uploader.constant");
 const uploader_util_1 = require("../utils/uploader.util");
 function UploaderValidatorInterceptor() {
@@ -35,12 +36,26 @@ function UploaderValidatorInterceptor() {
             return next.handle();
         }
         async validateMime(files, acceptMimetype) {
-            for (const file of files) {
-                const buffer = await (0, uploader_util_1.readChunk)(file.path, { length: 4100 });
-                const { mime } = await (0, file_type_1.fromBuffer)(buffer);
-                if (!acceptMimetype.includes(mime)) {
+            try {
+                for (const file of files) {
+                    console.log('File:', file);
+                    const buffer = await (0, uploader_util_1.readChunk)(file.path, { length: 4100 });
+                    const { ext, mime } = await (0, file_type_1.fromBuffer)(buffer);
+                    if (!acceptMimetype.includes(mime)) {
+                        throw new common_1.BadRequestException('Invalid original mime type');
+                    }
+                    const name = (0, path_1.basename)(file.filename, (0, path_1.extname)(file.filename));
+                    const filename = `${name}.${ext}`;
+                    const path = `${file.destination}/${filename}`;
+                    await (0, promises_1.rename)(file.path, path);
+                    file.mimetype = mime;
+                    file.filename = filename;
+                    file.path = path;
+                }
+            }
+            catch (error) {
+                for (const file of files) {
                     await (0, promises_1.unlink)(file.path);
-                    throw new common_1.BadRequestException('Invalid original mime type');
                 }
             }
         }
