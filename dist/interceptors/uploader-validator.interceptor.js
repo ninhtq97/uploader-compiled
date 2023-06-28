@@ -41,6 +41,7 @@ function UploaderValidatorInterceptor() {
                     console.log('File:', file);
                     const buffer = await (0, uploader_util_1.readChunk)(file.path, { length: 4100 });
                     const { ext, mime } = await (0, file_type_1.fromBuffer)(buffer);
+                    console.log('Real mime:', ext, mime);
                     if (!acceptMimetype.includes(mime)) {
                         throw new common_1.BadRequestException('Invalid original mime type');
                     }
