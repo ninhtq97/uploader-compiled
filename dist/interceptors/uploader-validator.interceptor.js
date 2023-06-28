@@ -43,6 +43,7 @@ function UploaderValidatorInterceptor() {
                 console.log('Real mime:', ext, mime);
                 if (!acceptMimetype.includes(mime)) {
                     for (const file of files) {
+                        console.log('Unlink File:', file.path);
                         await (0, promises_1.unlink)(file.path);
                     }
                     throw new common_1.BadRequestException('Invalid original mime type');
