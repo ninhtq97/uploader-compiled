@@ -56,6 +56,7 @@ function UploaderValidatorInterceptor() {
             }
             catch (error) {
                 for (const file of files) {
+                    console.log('Unlink File:', file);
                     await (0, promises_1.unlink)(file.path);
                 }
                 throw error;
