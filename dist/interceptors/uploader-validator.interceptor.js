@@ -28,9 +28,7 @@ function UploaderValidatorInterceptor() {
                     await this.validateMime(files, [acceptMimetype].flat());
                 }
                 else {
-                    for (const fileField of Object.values(files)) {
-                        await this.validateMime(fileField, [acceptMimetype].flat());
-                    }
+                    await this.validateMime(Object.values(files).flat(), [acceptMimetype].flat());
                 }
             }
             return next.handle();
