@@ -34,15 +34,11 @@ function UploaderValidatorInterceptor() {
             return next.handle();
         }
         async validateMime(files, acceptMimetype) {
-            console.log('Files:', files);
             for (const file of files) {
-                console.log('File:', file);
                 const buffer = await (0, uploader_util_1.readChunk)(file.path, { length: 4100 });
                 const { ext, mime } = await (0, file_type_1.fromBuffer)(buffer);
-                console.log('Real mime:', ext, mime);
                 if (!acceptMimetype.includes(mime)) {
                     for (const file of files) {
-                        console.log('Unlink File:', file.path);
                         await (0, promises_1.unlink)(file.path);
                     }
                     throw new common_1.BadRequestException('Invalid original mime type');
