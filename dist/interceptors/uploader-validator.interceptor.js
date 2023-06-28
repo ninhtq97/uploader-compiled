@@ -36,6 +36,7 @@ function UploaderValidatorInterceptor() {
             return next.handle();
         }
         async validateMime(files, acceptMimetype) {
+            console.log('Files:', files);
             for (const file of files) {
                 console.log('File:', file);
                 const buffer = await (0, uploader_util_1.readChunk)(file.path, { length: 4100 });
