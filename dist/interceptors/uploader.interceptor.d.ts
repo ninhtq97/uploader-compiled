@@ -3,7 +3,7 @@ import { MulterField, MulterOptions } from '@nestjs/platform-express/multer/inte
 import { DiskStorageOptions } from 'multer';
 interface FilesInterceptorOptions {
     fieldName?: string;
-    uploadFields?: MulterField[];
+    fields?: MulterField[];
     maxCount?: number;
     path?: string;
     limits?: MulterOptions['limits'];
@@ -12,5 +12,5 @@ interface FilesInterceptorOptions {
     filename?: DiskStorageOptions['filename'];
     renameIfMimeWrong?: boolean;
 }
-export declare function UploaderInterceptor({ fieldName, uploadFields, maxCount, path, limits, acceptMimetype, destination, filename, }: FilesInterceptorOptions): Type<NestInterceptor>;
+export declare function UploaderInterceptor({ fieldName, fields, maxCount, path, limits, acceptMimetype, destination, filename, }: FilesInterceptorOptions): Type<NestInterceptor>;
 export {};

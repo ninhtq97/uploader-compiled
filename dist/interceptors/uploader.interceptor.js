@@ -16,7 +16,7 @@ const multer_1 = require("multer");
 const uploader_constant_1 = require("../constants/uploader.constant");
 const uploader_service_1 = require("../uploader.service");
 const uploader_util_1 = require("../utils/uploader.util");
-function UploaderInterceptor({ fieldName, uploadFields, maxCount, path, limits, acceptMimetype = Object.values(uploader_constant_1.MIME_TYPE)
+function UploaderInterceptor({ fieldName, fields, maxCount, path, limits, acceptMimetype = Object.values(uploader_constant_1.MIME_TYPE)
     .map((e) => e)
     .flat(), destination, filename, }) {
     let Interceptor = class Interceptor {
@@ -31,21 +31,21 @@ function UploaderInterceptor({ fieldName, uploadFields, maxCount, path, limits, 
                 fileFilter: (0, uploader_util_1.fileFilter)(acceptMimetype),
                 limits: limits,
             };
-            if (uploadFields) {
-                this.fileInterceptor = new ((0, platform_express_1.FileFieldsInterceptor)(uploadFields, multerOptions))();
+            if (fields) {
+                this.fI = new ((0, platform_express_1.FileFieldsInterceptor)(fields, multerOptions))();
             }
             else if (maxCount) {
-                this.fileInterceptor = new ((0, platform_express_1.FilesInterceptor)(fieldName, maxCount, multerOptions))();
+                this.fI = new ((0, platform_express_1.FilesInterceptor)(fieldName, maxCount, multerOptions))();
             }
             else {
-                this.fileInterceptor = new ((0, platform_express_1.FileInterceptor)(fieldName, multerOptions))();
+                this.fI = new ((0, platform_express_1.FileInterceptor)(fieldName, multerOptions))();
             }
         }
         intercept(context, next) {
             const ctx = context.switchToHttp();
             const req = ctx.getRequest();
             req.headers[uploader_constant_1.UPLOADER_HEADERS.ACCEPT_MIME] = acceptMimetype;
-            return this.fileInterceptor.intercept(context, next);
+            return this.fI.intercept(context, next);
         }
     };
     Interceptor = __decorate([
