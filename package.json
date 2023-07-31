@@ -8,7 +8,7 @@
     "uploader",
     "nodejs"
   ],
-  "author": "Uploader Modules",
+  "author": "ninhtq <tranquangninh97@gmail.com>",
   "private": true,
   "license": "MIT",
   "scripts": {
