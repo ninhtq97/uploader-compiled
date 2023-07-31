@@ -1,7 +1,7 @@
 {
-  "name": "@nestjs-module/uploader",
+  "name": "@nestjs-modules/uploader",
   "version": "0.0.1",
-  "description": "NestJS - a uploader module",
+  "description": "NestJS - a uploader module (@uploader)",
   "keywords": [
     "nest",
     "multer",
