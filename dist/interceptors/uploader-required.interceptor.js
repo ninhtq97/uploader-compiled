@@ -8,15 +8,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UploaderRequiredInterceptor = void 0;
 const common_1 = require("@nestjs/common");
-let UploaderRequiredInterceptor = exports.UploaderRequiredInterceptor = class UploaderRequiredInterceptor {
-    intercept(context, next) {
-        const req = context.switchToHttp().getRequest();
-        if (!req.file && !req.files) {
-            throw new common_1.BadRequestException('File not found');
+function UploaderRequiredInterceptor() {
+    let Interceptor = class Interceptor {
+        async intercept(context, next) {
+            const ctx = context.switchToHttp();
+            const req = ctx.getRequest();
+            if (!req.file && !req.files) {
+                throw new common_1.BadRequestException('File not found');
+            }
+            return next.handle();
         }
-        return next.handle();
-    }
-};
-exports.UploaderRequiredInterceptor = UploaderRequiredInterceptor = __decorate([
-    (0, common_1.Injectable)()
-], UploaderRequiredInterceptor);
+    };
+    Interceptor = __decorate([
+        (0, common_1.Injectable)()
+    ], Interceptor);
+    return (0, common_1.mixin)(Interceptor);
+}
+exports.UploaderRequiredInterceptor = UploaderRequiredInterceptor;
