@@ -29,6 +29,7 @@ function UploaderValidatorInterceptor() {
             }
             await this.validateMime(arrFiles, [acceptMimetype].flat());
             return next.handle().pipe((0, rxjs_1.catchError)(async (err) => {
+                console.log('ERROR:', err);
                 for (const file of arrFiles) {
                     await (0, promises_1.unlink)(file.path);
                 }
