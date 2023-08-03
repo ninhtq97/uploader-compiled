@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.makeDes = exports.editFileName = exports.fileFilter = exports.convertPath = exports.readChunk = void 0;
-const fs_1 = require("fs");
-const nanoid_1 = require("nanoid");
-const path_1 = require("path");
+exports.removeFiles = exports.makeDes = exports.editFileName = exports.fileFilter = exports.convertPath = exports.readChunk = void 0;
 const common_1 = require("@nestjs/common");
 const promises_1 = require("fs/promises");
+const nanoid_1 = require("nanoid");
+const path_1 = require("path");
 async function readChunk(filePath, { length, startPosition = undefined }) {
     const fileDescriptor = await (0, promises_1.open)(filePath, 'r');
     try {
@@ -55,8 +54,14 @@ const editFileName = (req, file, callback) => {
 exports.editFileName = editFileName;
 const makeDes = (path) => {
     return async (req, file, cb) => {
-        await fs_1.promises.mkdir((0, path_1.resolve)((0, path_1.join)('.', path)), { recursive: true });
+        await (0, promises_1.mkdir)((0, path_1.resolve)((0, path_1.join)('.', path)), { recursive: true });
         cb(null, path);
     };
 };
 exports.makeDes = makeDes;
+const removeFiles = async (files) => {
+    for (const file of files)
+        await (0, promises_1.unlink)(file.path);
+    return true;
+};
+exports.removeFiles = removeFiles;

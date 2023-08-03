@@ -29,8 +29,7 @@ function UploaderValidatorInterceptor() {
             }
             await this.validateMime(arrFiles, [acceptMimetype].flat());
             return next.handle().pipe((0, rxjs_1.catchError)(async (err) => {
-                for (const file of arrFiles)
-                    await (0, promises_1.unlink)(file.path);
+                await (0, uploader_util_1.removeFiles)(arrFiles);
                 return (0, rxjs_1.throwError)(() => err);
             }));
         }
@@ -39,8 +38,7 @@ function UploaderValidatorInterceptor() {
                 const buffer = await (0, uploader_util_1.readChunk)(file.path, { length: 4100 });
                 const { ext, mime } = await (0, file_type_1.fromBuffer)(buffer);
                 if (!acceptMimetype.includes(mime)) {
-                    for (const file of files)
-                        await (0, promises_1.unlink)(file.path);
+                    await (0, uploader_util_1.removeFiles)(files);
                     throw new common_1.BadRequestException('Invalid original mime type');
                 }
                 const name = (0, path_1.basename)(file.filename, (0, path_1.extname)(file.filename));
