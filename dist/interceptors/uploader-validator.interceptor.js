@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const file_type_1 = require("file-type");
 const promises_1 = require("fs/promises");
 const path_1 = require("path");
+const rxjs_1 = require("rxjs");
 const uploader_constant_1 = require("../constants/uploader.constant");
 const uploader_util_1 = require("../utils/uploader.util");
 function UploaderValidatorInterceptor() {
@@ -20,27 +21,25 @@ function UploaderValidatorInterceptor() {
             const req = ctx.getRequest();
             const acceptMimetype = req.headers[uploader_constant_1.UPLOADER_HEADERS.ACCEPT_MIME];
             const { file, files } = req;
-            if (file) {
-                await this.validateMime([file], [acceptMimetype].flat());
-            }
+            let arrFiles = [];
+            if (file)
+                arrFiles = [file];
             if (files) {
-                if (Array.isArray(files)) {
-                    await this.validateMime(files, [acceptMimetype].flat());
-                }
-                else {
-                    await this.validateMime(Object.values(files).flat(), [acceptMimetype].flat());
-                }
+                arrFiles = Array.isArray(files) ? files : Object.values(files).flat();
             }
-            return next.handle();
+            await this.validateMime(arrFiles, [acceptMimetype].flat());
+            return next.handle().pipe((0, rxjs_1.catchError)(async (err) => {
+                for (const file of arrFiles) {
+                    await (0, promises_1.unlink)(file.path);
+                }
+                return (0, rxjs_1.throwError)(() => err);
+            }));
         }
         async validateMime(files, acceptMimetype) {
             for (const file of files) {
                 const buffer = await (0, uploader_util_1.readChunk)(file.path, { length: 4100 });
                 const { ext, mime } = await (0, file_type_1.fromBuffer)(buffer);
                 if (!acceptMimetype.includes(mime)) {
-                    for (const file of files) {
-                        await (0, promises_1.unlink)(file.path);
-                    }
                     throw new common_1.BadRequestException('Invalid original mime type');
                 }
                 const name = (0, path_1.basename)(file.filename, (0, path_1.extname)(file.filename));
