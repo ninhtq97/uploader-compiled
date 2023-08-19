@@ -1,5 +1,5 @@
 {
-  "name": "@nestjs-modules/uploader",
+  "name": "@ninhtq/uploader",
   "version": "0.0.1",
   "description": "NestJS - a uploader module (@uploader)",
   "keywords": [
