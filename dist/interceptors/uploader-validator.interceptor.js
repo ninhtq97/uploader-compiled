@@ -30,7 +30,7 @@ function UploaderValidatorInterceptor() {
             await this.validateMime(arrFiles, [acceptMimetype].flat());
             return next.handle().pipe((0, rxjs_1.catchError)(async (err) => {
                 await (0, uploader_util_1.removeFiles)(arrFiles);
-                return (0, rxjs_1.throwError)(() => err);
+                throw err;
             }));
         }
         async validateMime(files, acceptMimetype) {
