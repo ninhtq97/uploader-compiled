@@ -32,8 +32,8 @@ $ npm i github:ninhtq97/nestjs-module-uploader
   @Module({
     imports: [
       UploaderModule.forRootAsync({
-        useFactory: () => ({
-          dest: './uploads',
+        useFactory: (configService: ConfigService) => ({
+          dest: configService.get('UPLOADER_DEST'),
         }),
       }),
       ...
