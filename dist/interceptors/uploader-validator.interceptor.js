@@ -28,9 +28,12 @@ function UploaderValidatorInterceptor() {
                 arrFiles = Array.isArray(files) ? files : Object.values(files).flat();
             }
             await this.validateMime(arrFiles, [acceptMimetype].flat());
-            return next.handle().pipe((0, rxjs_1.catchError)(async (err) => {
-                await (0, uploader_util_1.removeFiles)(arrFiles);
-                throw err;
+            return next.handle().pipe((0, rxjs_1.tap)({
+                error: async () => {
+                    await (0, uploader_util_1.removeFiles)(arrFiles);
+                },
+            }), (0, rxjs_1.catchError)((err) => {
+                return (0, rxjs_1.throwError)(() => err);
             }));
         }
         async validateMime(files, acceptMimetype) {
