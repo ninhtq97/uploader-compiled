@@ -5,17 +5,13 @@ const common_1 = require("@nestjs/common");
 const promises_1 = require("fs/promises");
 const nanoid_1 = require("nanoid");
 const path_1 = require("path");
-async function readChunk(filePath, { length, startPosition = undefined }) {
+async function readChunk(filePath, options) {
     const fileDescriptor = await (0, promises_1.open)(filePath, 'r');
     try {
-        const result = await fileDescriptor.read({
-            buffer: Buffer.alloc(length),
-            length,
-            position: startPosition,
-        });
+        const result = await fileDescriptor.read(Object.assign({ buffer: Buffer.alloc(options.length) }, options));
         const bytesRead = result.bytesRead;
         let buffer = result.buffer;
-        if (bytesRead < length) {
+        if (bytesRead < options.length) {
             buffer = buffer.subarray(0, bytesRead);
         }
         return buffer;
