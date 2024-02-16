@@ -1,7 +1,7 @@
 # Installation
 
 ```bash
-$ npm i github:ninhtq97/nestjs-module-uploader
+$ npm i github:ninhtq97/uploader-compiled
 ```
 
 # Module
@@ -9,7 +9,7 @@ $ npm i github:ninhtq97/nestjs-module-uploader
 - **Configuration**
 
   ```ts
-  import { UploaderModule } from '@nestjs-module/uploader';
+  import { UploaderModule } from '@ninhtq/nestjs-uploader';
 
   @Module({
     imports: [
@@ -27,7 +27,7 @@ $ npm i github:ninhtq97/nestjs-module-uploader
 - **Async Configuration**
 
   ```ts
-  import { UploaderModule } from '@nestjs-module/uploader';
+  import { UploaderModule } from '@ninhtq/nestjs-uploader';
 
   @Module({
     imports: [
