@@ -39,7 +39,10 @@ function UploaderValidatorInterceptor() {
         async validateMime(files, acceptMimetype) {
             for (const file of files) {
                 const buffer = await (0, uploader_util_1.readChunk)(file.path, { length: 4100 });
-                const { ext, mime } = await (0, file_type_1.fromBuffer)(buffer);
+                const { ext, mime } = await (0, file_type_1.fromBuffer)(buffer).catch((err) => {
+                    common_1.Logger.error(`Invalid file ${file.filename}:`, JSON.stringify(err));
+                    throw new common_1.BadRequestException('Invalid file');
+                });
                 if (!acceptMimetype.includes(mime)) {
                     await (0, uploader_util_1.removeFiles)(files);
                     throw new common_1.BadRequestException('Invalid original mime type');
